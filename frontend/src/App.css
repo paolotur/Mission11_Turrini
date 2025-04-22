@@ -40,3 +40,16 @@
 .read-the-docs {
   color: #888;
 }
+
+input[type="number"] {
+  text-align: center;
+}
+td, th {
+  vertical-align: middle;
+}
+
+.table-responsive {
+  max-height: 400px;
+  overflow-y: auto;
+}
+

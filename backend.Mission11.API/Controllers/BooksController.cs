@@ -18,16 +18,32 @@ namespace Mission11.API.Controllers
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Book>>> GetBooks(
-            int page = 1, int pageSize = 5, string sort = "Title", string order = "asc")
+            int page = 1, int pageSize = 5, string sort = "Title", string order = "asc", string? category = null)
         {
-            var books = _context.Books.AsQueryable();
+            var booksQuery = _context.Books.AsQueryable();
 
-            if (sort == "Title")
+            // Apply category filter if specified
+            if (!string.IsNullOrEmpty(category))
             {
-                books = order == "asc" ? books.OrderBy(b => b.Title) : books.OrderByDescending(b => b.Title);
+                booksQuery = booksQuery.Where(b => b.Category.ToLower() == category.ToLower());
             }
 
-            var result = await books
+            // Apply sorting
+            booksQuery = sort.ToLower() switch
+            {
+                "title" => (order.ToLower() == "desc")
+                    ? booksQuery.OrderByDescending(b => b.Title)
+                    : booksQuery.OrderBy(b => b.Title),
+
+                "price" => (order.ToLower() == "desc")
+                    ? booksQuery.OrderByDescending(b => b.Price)
+                    : booksQuery.OrderBy(b => b.Price),
+
+                _ => booksQuery.OrderBy(b => b.Title) // default sort
+            };
+
+            // Apply pagination
+            var result = await booksQuery
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
@@ -36,3 +52,4 @@ namespace Mission11.API.Controllers
         }
     }
 }
+
