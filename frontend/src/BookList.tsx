@@ -154,7 +154,7 @@ const BookList: React.FC = () => {
             <>
               <div className="row row-cols-1 row-cols-md-2 g-4">
                 {books.map((book, index) => (
-                  <div key={`${book.bookId}-${index}`} className="col">
+                  <div key={`${book.bookID}-${index}`} className="col">
                     <div className="card h-100">
                       <div className="card-body">
                         <h5 className="card-title">{book.title}</h5>
